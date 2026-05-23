@@ -1,3 +1,4 @@
+#Momin Rifat
 """
 Django settings for E_shop project.
 
