@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,HttpResponse
-from app.models import Category,Product,Contact_us,Order
+from app.models import Category,Product,Contact_us,Order,Brand
 from django.contrib.auth import authenticate,login
 from app.models import UserCreateForm
 from django.contrib.auth.models import User
@@ -14,10 +14,21 @@ def Base(request):
 
 def Index(request):
     category= Category.objects.all()
-    product= Product.objects.all()
+    brand= Brand.objects.all()
+    brandID= request.GET.get('brand')
+
+    categoryID= request.GET.get('category')
+    if categoryID:
+        product= Product.objects.filter(Subcategory= categoryID).order_by('-id')
+    elif brandID:
+        product = Product.objects.filter(brand=brandID).order_by('-id')
+    else:
+        product = Product.objects.all()
+
     context={
         'category' : category,
         'product': product,
+        'brand': brand,
     }
     return render(request, 'index.html',context)
 
@@ -134,3 +145,12 @@ def Checkout(request):
         return redirect('index')
 
     return HttpResponse("this is checkout page")
+
+def Your_Order(request):
+    uid= request.session.get('-auth-user-id')
+    user= User.objects.get(pk=uid)
+    order= Order.objects.filter(user= user)
+    context= {
+        'order': order,
+    }
+    return render(request, 'order.html',context)
