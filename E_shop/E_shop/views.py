@@ -154,3 +154,24 @@ def Your_Order(request):
         'order': order,
     }
     return render(request, 'order.html',context)
+def Product_page(request):
+    category = Category.objects.all()
+    brand= Brand.objects.all()
+    brandID= request.GET.get('brand')
+
+    categoryID= request.GET.get('category')
+    if categoryID:
+        product= Product.objects.filter(Subcategory= categoryID).order_by('-id')
+    elif brandID:
+        product = Product.objects.filter(brand=brandID).order_by('-id')
+    else:
+        product = Product.objects.all()
+
+
+    context = {
+        'category': category,
+        'brand' : brand,
+        'product' : product,
+    }
+
+    return render(request, 'product.html', context)
