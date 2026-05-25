@@ -89,11 +89,18 @@
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
 								<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
-								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
+								<li><a href="/order/"><i class="fa fa-star"></i>Your Order</a></li>
 								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
 								<li><a href="/cart/cart_detail/"><i class="fa fa-shopping-cart"></i> Cart <span class="badge badge-secondary">{{request.session.cart|length}}</span></a></li>
                                 {% if user.is_authenticated %}
-								<li><a href="{% url 'logout' %}"><i class="fa fa-lock"></i> Logout</a></li>
+								<li>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" style="background:none;border:none;padding:0;">
+            <i class="fa fa-lock"></i> Logout
+        </button>
+    </form>
+</li>
                                 {% else %}
                                 <li><a href="{% url 'login' %}"><i class="fa fa-lock"></i> Login</a></li>
                                 {% endif %}

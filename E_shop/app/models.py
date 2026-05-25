@@ -83,7 +83,6 @@ class Order(models.Model):
     address= models.TextField()
     phone= models.CharField(max_length=10)
     pincode = models.CharField(max_length=10)
-    total= models.CharField(max_length=1000,default=' ')
     date= models.DateField(default= datetime.datetime.today)
 
     def __str__(self):
