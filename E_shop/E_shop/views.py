@@ -1,7 +1,6 @@
 from django.shortcuts import render,redirect
-from app.models import Category,Product
+from app.models import Category, Product, UserCreateForm, Contact_us
 from django.contrib.auth import authenticate,login
-from app.models import UserCreateForm
 from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
 
