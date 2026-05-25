@@ -1,14 +1,11 @@
-<<<<<<< HEAD
 from django.shortcuts import render,redirect
 from app.models import Category, Product, UserCreateForm, Contact_us
 from django.contrib.auth import authenticate,login
-=======
 from django.shortcuts import render,redirect,HttpResponse
 from app.models import Category,Product,Contact_us,Order,Brand
 from django.contrib.auth import authenticate,login
 from app.models import UserCreateForm
 from django.contrib.auth.models import User
->>>>>>> 35148584190abcfbc87ad6f6eac998276f49a861
 from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
 
