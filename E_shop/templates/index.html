@@ -1,177 +1,557 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block extra_css %}
-  <link href="{% static 'css/index.css' %}" rel="stylesheet" />
+<link href="{% static 'css/index.css' %}" rel="stylesheet" />
+<style>
+
+/* ── GLOBAL ── */
+body { background: #ffffff !important; color: #7B2CBF !important; }
+h1,h2,h3,h4,h5,h6,p,a,li,span { color: #7B2CBF !important; }
+.btn, .add-to-cart { background: #7B2CBF !important; color: #fff !important; border: none !important; }
+.btn:hover, .add-to-cart:hover { background: #5a189a !important; }
+.panel-heading, .panel-body { background: #ffffff !important; color: #7B2CBF !important; }
+.badge { background: #7B2CBF !important; }
+
+/* ── SECTION TITLE ── */
+.section-heading {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #7B2CBF;
+    margin-bottom: 24px;
+    position: relative;
+}
+.section-heading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 1px;
+    background: #e0c0ff;
+}
+.section-heading span {
+    background: #fff;
+    padding: 0 16px;
+    position: relative;
+    z-index: 1;
+}
+.popular-section .section-heading span,
+.reels-section .section-heading span { background: #f9f4ff; }
+
+/* ── POPULAR SLIDER ── */
+.popular-section {
+    background: #f9f4ff;
+    padding: 36px 0;
+    margin-bottom: 0;
+}
+.pop-slider-wrap { position: relative; overflow: hidden; }
+.pop-slider-track { display: flex; transition: transform 0.45s ease; }
+.pop-slide { min-width: calc(100% / 3); padding: 8px 10px; box-sizing: border-box; }
+.pop-card {
+    background: #fff;
+    border: 1.5px solid #e0c0ff;
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+}
+.pop-badge {
+    display: inline-block;
+    background: #7B2CBF;
+    color: #fff !important;
+    font-size: 11px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+.pop-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+.pop-card h2 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.pop-card p  { font-size: 13px; margin-bottom: 12px; }
+.pop-prev, .pop-next,
+.reel-prev, .reel-next {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    background: #7B2CBF; color: #fff;
+    border: none; border-radius: 50%;
+    width: 36px; height: 36px;
+    font-size: 20px; cursor: pointer; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+}
+.pop-prev, .reel-prev { left: 6px; }
+.pop-next, .reel-next { right: 6px; }
+.pop-prev:hover, .pop-next:hover,
+.reel-prev:hover, .reel-next:hover { background: #5a189a; }
+.pop-dots, .reel-dots {
+    display: flex; justify-content: center; gap: 7px; margin-top: 16px;
+}
+.pop-dot, .reel-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #d0a8f5; border: none; cursor: pointer;
+    transition: background 0.2s; padding: 0;
+}
+.pop-dot.active, .reel-dot.active { background: #7B2CBF; }
+
+/* ══════════════════════════════
+   SHOP BY REELS SLIDER
+══════════════════════════════ */
+.reels-section {
+    background: #f9f4ff;
+    padding: 36px 0;
+    border-top: 2px solid #e0c0ff;
+    border-bottom: 2px solid #e0c0ff;
+    margin-bottom: 36px;
+}
+.reel-slider-wrap { position: relative; overflow: hidden; }
+.reel-slider-track { display: flex; transition: transform 0.45s ease; }
+.reel-slide {
+    min-width: calc(100% / 4);
+    padding: 8px 10px;
+    box-sizing: border-box;
+}
+.reel-card {
+    background: #fff;
+    border: 1.5px solid #e0c0ff;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+.reel-card video {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    display: block;
+    background: #1a1a2e;
+}
+.reel-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(123,44,191,0.85));
+    padding: 30px 10px 12px;
+    text-align: center;
+}
+.reel-overlay p {
+    color: #fff !important;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.reel-overlay a {
+    display: inline-block;
+    background: #fff;
+    color: #7B2CBF !important;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+}
+.reel-overlay a:hover { background: #e0c0ff; }
+.reel-play-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px;
+    background: rgba(123,44,191,0.75);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.reel-play-icon::after {
+    content: '';
+    border-left: 16px solid #fff;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    margin-left: 4px;
+}
+.reel-card.playing .reel-play-icon { opacity: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 992px) {
+    .reel-slide { min-width: calc(100% / 3); }
+}
+@media (max-width: 768px) {
+    .reel-slide { min-width: 50%; }
+    .pop-slide  { min-width: 50%; }
+}
+@media (max-width: 480px) {
+    .reel-slide { min-width: 50%; }
+    .pop-slide  { min-width: 100%; }
+}
+
+</style>
 {% endblock %}
+
+
 {% block body %}
-  <section id="slider">
-    <!-- slider -->
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div id="slider-carousel" class="carousel slide" data-ride="carousel">
+
+<!-- ══════════════════════════════
+     HERO SLIDER
+══════════════════════════════ -->
+<section id="slider">
+    <div class="container-fluid" style="padding:0;">
+        <div id="slider-carousel" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
-              <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
-              <li data-target="#slider-carousel" data-slide-to="1"></li>
-              <li data-target="#slider-carousel" data-slide-to="2"></li>
+                <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
+                <li data-target="#slider-carousel" data-slide-to="1"></li>
+                <li data-target="#slider-carousel" data-slide-to="2"></li>
             </ol>
-
             <div class="carousel-inner">
-              <div class="item active">
-                <div class="col-sm-6">
-                  <h1><span>E</span>-SHOPPER</h1>
-                  <h2>Free E-Commerce Template</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                  <button type="button" class="btn btn-default get">Get it now</button>
+                <div class="item active">
+                    <img src="{% static 'images/home/sli1.jpeg' %}"
+                         class="img-responsive"
+                         style="width:100%;height:500px;object-fit:cover;">
                 </div>
-                <div class="col-sm-6">
-                  <img src="{% static 'images/home/COVER4.jpg.jpeg' %}" class="girl img-responsive" alt="" />
-                  <img src="{% static 'images/home/pricing.png' %}" class="pricing" alt="" />
+                <div class="item">
+                    <img src="{% static 'images/home/sli2.jpeg' %}"
+                         class="img-responsive"
+                         style="width:100%;height:500px;object-fit:cover;">
                 </div>
-              </div>
-              <div class="item">
-                <div class="col-sm-6">
-                  <h1><span>E</span>-SHOPPER</h1>
-                  <h2>100% Responsive Design</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                  <button type="button" class="btn btn-default get">Get it now</button>
+                <div class="item">
+                    <img src="{% static 'images/home/sli3.jpeg' %}"
+                         class="img-responsive"
+                         style="width:100%;height:500px;object-fit:cover;">
                 </div>
-                <div class="col-sm-6">
-                  <img src="{% static 'images/home/summer.jpg.jpeg' %}" class="girl img-responsive" alt="" />
-                  <img src="images/home/pricing.png" class="pricing" alt="" />
-                </div>
-              </div>
-
-              <div class="item">
-                <div class="col-sm-6">
-                  <h1><span>E</span>-SHOPPER</h1>
-                  <h2>Free Ecommerce Template</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                  <button type="button" class="btn btn-default get">Get it now</button>
-                </div>
-
-              </div>
             </div>
-
-            <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-            <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next"><i class="fa fa-angle-right"></i></a>
-          </div>
+            <a class="left control-carousel hidden-xs"
+               href="#slider-carousel" data-slide="prev">
+                <i class="fa fa-angle-left"></i>
+            </a>
+            <a class="right control-carousel hidden-xs"
+               href="#slider-carousel" data-slide="next">
+                <i class="fa fa-angle-right"></i>
+            </a>
         </div>
-      </div>
     </div>
-  </section>
-  <!-- /slider -->
+</section>
 
-  <section>
+
+<!-- ══════════════════════════════
+     MOST POPULAR SLIDER
+══════════════════════════════ -->
+<section class="popular-section">
     <div class="container">
-      <div class="row">
-        <div class="col-sm-3">
-          <div class="left-sidebar">
-            <h2>Category</h2>
-            <div class="panel-group category-products" id="accordian">
-              <!-- category-products -->
+        <div class="section-heading"><span>&#9733; Most Popular</span></div>
+        <div class="pop-slider-wrap" id="popWrap">
+            <div class="pop-slider-track" id="popTrack">
 
-              {% for cat in category %}
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <h4 class="panel-title">
-                      <a data-toggle="collapse" data-parent="#accordian" href="#cat{{ forloop.counter }}">
-                        <span class="badge pull-right"><i class="fa fa-plus"></i></span>
-                        {{ cat.name }}
-                      </a>
-                    </h4>
-                  </div>
-
-                  <div id="cat{{ forloop.counter }}" class="panel-collapse collapse">
-                    <div class="panel-body">
-                      <ul>
-                        {% for i in cat.subcategory_set.all %}
-                          <li>
-                            <a href="#">{{ i.name }}</a>
-                          </li>
-                        {% endfor %}
-                      </ul>
+                {% for prod in popular_products %}
+                <div class="pop-slide">
+                    <div class="pop-card">
+                        <span class="pop-badge">&#9733; Popular</span>
+                        <img src="{{ prod.image.url }}" alt="{{ prod.name }}">
+                        <h2>&#2547;{{ prod.price }}</h2>
+                        <p>{{ prod.name }}</p>
+                        <a href="{% url 'cart:cart_add' prod.id %}"
+                           class="btn add-to-cart">
+                            <i class="fa fa-shopping-cart"></i> Add to cart
+                        </a>
                     </div>
-                  </div>
                 </div>
-              {% endfor %}
-            </div>
+                {% empty %}
+                <p style="text-align:center;padding:20px;width:100%;color:#7B2CBF;">
+                    No popular products yet.
+                </p>
+                {% endfor %}
 
-            <div class="brands_products">
-              <!-- brands_products -->
-              <h2>Brands</h2>
-              <div class="brands-name">
-                <ul class="nav nav-pills nav-stacked">
-                    {% for i in brand %}
-                  <li>
-                    <a href="/?brand={{i.id}}"><span class="pull-right">(50)</span>{{i.name}}</a>
-                  </li>
-                  {% endfor %}
-
-                </ul>
-              </div>
             </div>
-            <!-- /brands_products -->
-
-            <div class="price-range">
-              <!-- price-range -->
-              <h2>Price Range</h2>
-              <div class="well text-center">
-                <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" /><br />
-                <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
-              </div>
-            </div>
-            <!-- /price-range -->
-
-            <div class="shipping text-center">
-              <!-- shipping -->
-              <img src="{% static 'images/home/shipping.jpg' %}" alt="" />
-            </div>
-            <!-- /shipping -->
-          </div>
+            <button class="pop-prev" id="popPrev" aria-label="Previous">&#8249;</button>
+            <button class="pop-next" id="popNext" aria-label="Next">&#8250;</button>
         </div>
-
-        <div class="col-sm-9 padding-right">
-          <div class="features_items">
-            <!-- features_items -->
-            <h2 class="title text-center">Features Items</h2>
-              {% for prod in product %}
-            <div class="col-sm-4">
-              <div class="product-image-wrapper">
-                <div class="single-products">
-                  <div class="productinfo text-center">
-                    <img src="{{prod.image}}" alt="" height="300px;" />
-                    <h2>{{prod.price}}</h2>
-                    <p>{{prod.name}}</p>
-                    <a href="{% url 'cart_add' prod.id %}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-                  </div>
-                  <div class="product-overlay">
-                    <div class="overlay-content">
-                      <h2>{{prod.price}}</h2>
-                      <p>{{prod.name}}</p>
-                      <a href="{% url 'cart_add' prod.id %}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="choose">
-                  <ul class="nav nav-pills nav-justified">
-                    <li>
-                      <a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a>
-                    </li>
-                    <li>
-                      <a href="#"><i class="fa fa-plus-square"></i>Add to compare</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-          </div>
-          <!-- features_items -->
-
-
-        </div>
-      </div>
+        <div class="pop-dots" id="popDots"></div>
     </div>
-  </section>
+</section>
+
+
+<!-- ══════════════════════════════
+     SHOP BY REELS — SLIDER
+══════════════════════════════ -->
+<section class="reels-section">
+    <div class="container">
+        <div class="section-heading"><span>&#127909; Shop by Reels</span></div>
+
+        <div class="reel-slider-wrap" id="reelWrap">
+            <div class="reel-slider-track" id="reelTrack">
+
+                {% for reel in reels %}
+                <div class="reel-slide">
+                    <div class="reel-card" id="reel-{{ forloop.counter }}">
+
+                        <video
+                            src="{{ reel.video.url }}"
+                            loop
+                            playsinline
+                            preload="metadata"
+                            onclick="toggleReel(this)">
+                        </video>
+
+                        <div class="reel-play-icon"></div>
+
+                        <div class="reel-overlay">
+                            <p>{{ reel.title }}</p>
+                            <a href="{% url 'cart:cart_add' reel.product.id %}">
+                                <i class="fa fa-shopping-cart"></i> Shop Now
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+                {% empty %}
+                <p style="text-align:center;color:#7B2CBF;padding:30px 0;width:100%;">
+                    No reels uploaded yet.
+                </p>
+                {% endfor %}
+
+            </div>
+            <button class="reel-prev" id="reelPrev" aria-label="Previous">&#8249;</button>
+            <button class="reel-next" id="reelNext" aria-label="Next">&#8250;</button>
+        </div>
+        <div class="reel-dots" id="reelDots"></div>
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════
+     CATEGORY + BRANDS + FEATURED
+══════════════════════════════ -->
+<section style="padding-bottom:50px;">
+    <div class="container">
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-sm-3">
+                <div class="left-sidebar">
+
+                    <h2>Category</h2>
+                    <div class="panel-group category-products">
+                        {% for cat in category %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse"
+                                       href="#cat{{ forloop.counter }}">
+                                        {{ cat.name }}
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="cat{{ forloop.counter }}"
+                                 class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul>
+                                        {% for i in cat.subcategory_set.all %}
+                                        <li><a href="#">{{ i.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <h2 style="margin-top:24px;">Brands</h2>
+                    <div class="brands-name">
+                        <ul class="nav nav-pills nav-stacked">
+                            {% for i in brand %}
+                            <li>
+                                <a href="/?brand={{ i.id }}">{{ i.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- FEATURED PRODUCTS -->
+            <div class="col-sm-9 padding-right">
+                <div class="features_items">
+
+                    <div class="section-heading" style="background:#fff;">
+                        <span style="background:#fff;">Featured Items</span>
+                    </div>
+
+                    {% for prod in product %}
+                    <div class="col-sm-4">
+                        <div class="product-image-wrapper">
+                            <div class="single-products">
+                                <div class="productinfo text-center">
+                                    <img src="{{ prod.image.url }}"
+                                         height="250px"
+                                         alt="{{ prod.name }}">
+                                    <h2>&#2547;{{ prod.price }}</h2>
+                                    <p>{{ prod.name }}</p>
+                                    <a href="{% url 'cart:cart_add' prod.id %}"
+                                       class="btn add-to-cart">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        Add to cart
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+
+/* ══════════════════════════════
+   POPULAR SLIDER
+══════════════════════════════ */
+(function () {
+    var track  = document.getElementById('popTrack');
+    var dotsEl = document.getElementById('popDots');
+    var slides = track ? track.querySelectorAll('.pop-slide') : [];
+    var total  = slides.length;
+    if (!total) return;
+
+    var perView, pages, cur = 0, timer;
+
+    function setPerView() {
+        perView = window.innerWidth <= 480 ? 1
+                : window.innerWidth <= 768 ? 2 : 3;
+        pages = Math.ceil(total / perView);
+        slides.forEach(function(s){
+            s.style.minWidth = (100 / perView) + '%';
+        });
+    }
+
+    function buildDots() {
+        dotsEl.innerHTML = '';
+        for (var i = 0; i < pages; i++) {
+            var d = document.createElement('button');
+            d.className = 'pop-dot' + (i === 0 ? ' active' : '');
+            d.setAttribute('aria-label', 'Slide ' + (i + 1));
+            (function(idx){ d.onclick = function(){ goTo(idx); startAuto(); }; })(i);
+            dotsEl.appendChild(d);
+        }
+    }
+
+    function goTo(p) {
+        cur = (p + pages) % pages;
+        var shift = cur * perView * (100 / total);
+        track.style.transform = 'translateX(-' + shift + '%)';
+        dotsEl.querySelectorAll('.pop-dot').forEach(function(d, i){
+            d.classList.toggle('active', i === cur);
+        });
+    }
+
+    function startAuto() {
+        clearInterval(timer);
+        timer = setInterval(function(){ goTo(cur + 1); }, 3500);
+    }
+
+    document.getElementById('popPrev').onclick = function(){ goTo(cur - 1); startAuto(); };
+    document.getElementById('popNext').onclick = function(){ goTo(cur + 1); startAuto(); };
+    window.addEventListener('resize', function(){ setPerView(); buildDots(); goTo(0); });
+
+    setPerView(); buildDots(); goTo(0); startAuto();
+})();
+
+
+/* ══════════════════════════════
+   REELS SLIDER
+══════════════════════════════ */
+(function () {
+    var track  = document.getElementById('reelTrack');
+    var dotsEl = document.getElementById('reelDots');
+    var slides = track ? track.querySelectorAll('.reel-slide') : [];
+    var total  = slides.length;
+    if (!total) return;
+
+    var perView, pages, cur = 0, timer;
+
+    function setPerView() {
+        perView = window.innerWidth <= 480 ? 2
+                : window.innerWidth <= 768 ? 2
+                : window.innerWidth <= 992 ? 3 : 4;
+        pages = Math.ceil(total / perView);
+        slides.forEach(function(s){
+            s.style.minWidth = (100 / perView) + '%';
+        });
+    }
+
+    function buildDots() {
+        dotsEl.innerHTML = '';
+        for (var i = 0; i < pages; i++) {
+            var d = document.createElement('button');
+            d.className = 'reel-dot' + (i === 0 ? ' active' : '');
+            d.setAttribute('aria-label', 'Reel slide ' + (i + 1));
+            (function(idx){ d.onclick = function(){ goTo(idx); startAuto(); }; })(i);
+            dotsEl.appendChild(d);
+        }
+    }
+
+    function goTo(p) {
+        cur = (p + pages) % pages;
+        var shift = cur * perView * (100 / total);
+        track.style.transform = 'translateX(-' + shift + '%)';
+        dotsEl.querySelectorAll('.reel-dot').forEach(function(d, i){
+            d.classList.toggle('active', i === cur);
+        });
+        /* pause all videos when sliding */
+        track.querySelectorAll('video').forEach(function(v){
+            v.pause();
+            v.closest('.reel-card').classList.remove('playing');
+        });
+    }
+
+    function startAuto() {
+        clearInterval(timer);
+        timer = setInterval(function(){ goTo(cur + 1); }, 4000);
+    }
+
+    document.getElementById('reelPrev').onclick = function(){ goTo(cur - 1); startAuto(); };
+    document.getElementById('reelNext').onclick = function(){ goTo(cur + 1); startAuto(); };
+    window.addEventListener('resize', function(){ setPerView(); buildDots(); goTo(0); });
+
+    setPerView(); buildDots(); goTo(0); startAuto();
+})();
+
+
+/* ══════════════════════════════
+   REEL PLAY / PAUSE
+══════════════════════════════ */
+function toggleReel(video) {
+    var card = video.closest('.reel-card');
+    if (video.paused) {
+        document.querySelectorAll('.reel-card video').forEach(function(v){
+            if (v !== video) {
+                v.pause();
+                v.closest('.reel-card').classList.remove('playing');
+            }
+        });
+        video.play();
+        card.classList.add('playing');
+    } else {
+        video.pause();
+        card.classList.remove('playing');
+    }
+}
+
+/* pause reels when scrolled out of view */
+var reelObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+        if (!entry.isIntersecting) {
+            var v = entry.target.querySelector('video');
+            if (v) { v.pause(); entry.target.classList.remove('playing'); }
+        }
+    });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.reel-card').forEach(function(card){
+    reelObserver.observe(card);
+});
+
+</script>
 {% endblock %}

@@ -148,3 +148,5 @@ EMAIL_HOST_PASSWORD = 'Mahathir2002'
 
 LOGIN_REDIRECT_URL='index'
 LOGOUT_REDIRECT_URL='index'
+LOGIN_URL = '/accounts/login/'
+'yourapp.context_processors.social_media',
