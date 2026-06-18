@@ -17,6 +17,9 @@
 <style>
 /* ══════════════════════════════════════════
    RESET & BASE
+   NOTE: !important used deliberately to
+   override conflicts from main.css and
+   responsive.css which load before this block
 ══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -27,19 +30,39 @@
 }
 
 html, body {
-    overflow-x: hidden;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-img { max-width: 100%; height: auto; display: block; }
+/* Make every image safe by default */
+img { max-width: 100% !important; height: auto; display: block; }
 
 body {
     background: var(--white);
     color: var(--purple);
-    /* FIX: bottom padding applied only via media query; zero here */
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
+}
+
+/*
+ * CRITICAL: Force all sections/rows inside page content
+ * to never exceed viewport width. Catches slider plugins,
+ * Bootstrap rows, and legacy layout divs from main.css.
+ */
+.container,
+.container-fluid,
+.row,
+section,
+.section {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Bootstrap 3 rows get negative margins that cause overflow — neutralise globally */
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 
 /* ══════════════════════════════════════════
@@ -202,7 +225,7 @@ body {
    MOBILE SEARCH BAR (shown <600px)
 ══════════════════════════════════════════ */
 .mobile-search-bar {
-    display: none;          /* hidden by default; shown via media query */
+    display: none !important;   /* hidden by default — !important overrides responsive.css/main.css */
     background: var(--white);
     border-bottom: 1.5px solid var(--purple-light);
     padding: 8px 16px;
@@ -408,7 +431,7 @@ body {
    BOTTOM NAV (mobile only)
 ══════════════════════════════════════════ */
 .bottom-nav {
-    display: none;          /* hidden by default; shown via media query */
+    display: none !important;   /* hidden by default — shown via media query with !important */
     position: fixed;
     bottom: 0;
     left: 0;
@@ -604,47 +627,58 @@ body {
 ══════════════════════════════════════════ */
 @media (max-width: 600px) {
     /* Swap desktop search for inline mobile search */
-    .header-bottom    { display: none; }
-    .mobile-search-bar { display: block; }
+    .header-bottom     { display: none !important; }
+    .mobile-search-bar { display: block !important; }
 
     /* Hide text labels in top bar contact links */
     .contact-links .link-label { display: none; }
     .header-top { padding: 4px 0; }
 
     /* Compact logo bar */
-    .header-middle { padding: 12px 0; }
-    .logo img      { max-height: 58px; }
+    .header-middle { padding: 12px 0 !important; }
+    .logo img      { max-height: 58px !important; }
 
     /* Show bottom nav */
-    .bottom-nav { display: block; }
+    .bottom-nav { display: block !important; }
 
     /*
      * FIX: Only the footer needs extra bottom space to clear the fixed nav.
      * Putting padding-bottom on <body> AND the footer was doubling the gap.
      */
-    .site-footer { padding-bottom: 70px; }
-    body          { padding-bottom: 0; }
+    .site-footer { padding-bottom: 70px !important; }
+    body          { padding-bottom: 0 !important; }
 
     /* Hide floating chat widget — bottom nav handles contact */
-    #chat-widget { display: none; }
+    #chat-widget { display: none !important; }
 
     /* Tighten bottom nav items */
     .bottom-nav-item { min-width: 40px; padding: 4px; }
     .bottom-nav-item i    { font-size: 18px; }
     .bottom-nav-item span { font-size: 9px; }
+
+    /* Force full-width on any slider or hero banner */
+    .slider-area,
+    .carousel,
+    .hero,
+    [class*="slider"],
+    [class*="banner"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
 }
 
 /* ══════════════════════════════════════════
    RESPONSIVE — Very small phones  (≤ 380px)
 ══════════════════════════════════════════ */
 @media (max-width: 380px) {
-    .header-middle { padding: 8px 0; }
-    .logo img      { max-height: 46px; }
+    .header-middle { padding: 8px 0 !important; }
+    .logo img      { max-height: 46px !important; }
     .contact-links { gap: 8px; }
 
     /* Minimal bottom nav — icons only */
     .bottom-nav-item        { min-width: 34px; padding: 4px 2px; }
-    .bottom-nav-item span   { display: none; }
+    .bottom-nav-item span   { display: none !important; }
     .bottom-nav-item i      { font-size: 20px; }
 }
 </style>
