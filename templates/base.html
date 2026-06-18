@@ -23,7 +23,14 @@
     --white: #ffffff;
 }
 
+/* FIX 1: Prevent horizontal scroll on all devices */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
 img { max-width: 100%; height: auto; }
+
 body {
     background: var(--white);
     color: var(--purple);
@@ -35,6 +42,8 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 16px;
+    /* FIX 4: Prevent container overflow */
+    box-sizing: border-box;
 }
 
 /* ── HEADER TOP ── */
@@ -75,23 +84,32 @@ body {
 .header-middle {
     background: var(--purple);
     padding: 22px 0;
+    /* FIX 4: Contain children */
+    width: 100%;
+    max-width: 100%;
 }
 .header-middle-inner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+    /* FIX 4: Don't let flex row overflow */
+    max-width: 100%;
+    min-width: 0;
 }
 .logo {
     flex: 1;
     display: flex;
     justify-content: center;
-    min-width: 0;
+    min-width: 0;      /* FIX 4: Critical for flex overflow prevention */
+    overflow: hidden;
 }
+/* FIX 3: Use max-height instead of fixed height so image scales naturally */
 .logo img {
-    width: 100%;
-    max-width: 650px;
-    height: 90px;
+    width: auto;
+    max-width: 100%;
+    max-height: 90px;
+    height: auto;
     object-fit: contain;
     display: block;
 }
@@ -131,6 +149,7 @@ body {
     border-bottom: 2px solid var(--purple-light);
     position: relative;
     z-index: 999;
+    width: 100%;
 }
 .nav-dropdown.open { display: block; }
 .nav-dropdown-inner {
@@ -173,6 +192,8 @@ body {
     background: var(--white);
     border-bottom: 1.5px solid var(--purple-light);
     padding: 8px 16px;
+    width: 100%;
+    box-sizing: border-box;
 }
 .mobile-search-bar form {
     display: flex;
@@ -184,6 +205,7 @@ body {
 }
 .mobile-search-bar input {
     flex: 1;
+    min-width: 0;   /* FIX 4: Prevents input from overflowing flex row */
     border: none;
     outline: none;
     padding: 7px 12px;
@@ -197,6 +219,7 @@ body {
     padding: 7px 14px;
     cursor: pointer;
     font-size: 13px;
+    flex-shrink: 0;
 }
 .mobile-search-bar button:hover { background: #5a1a99; }
 
@@ -225,6 +248,7 @@ body {
     font-size: 13px;
     color: var(--purple);
     width: 220px;
+    min-width: 0;
 }
 .search-box button {
     background: var(--purple);
@@ -242,6 +266,14 @@ body {
     color: var(--white);
     padding: 48px 0 0;
     margin-top: 40px;
+    width: 100%;
+    overflow: hidden;
+}
+/* FIX 5: Clearfix for Bootstrap 3 float-based grid */
+.site-footer .row::after {
+    content: '';
+    display: table;
+    clear: both;
 }
 .footer-brand-name {
     font-size: 36px;
@@ -524,7 +556,8 @@ body {
 /* Tablet */
 @media (max-width: 768px) {
     .header-top-inner { justify-content: center; }
-    .logo img { max-width: 450px; height: 70px; }
+    /* FIX 3: max-height instead of fixed height */
+    .logo img { max-height: 70px; }
     .search-box input { width: 160px; }
 
     .nav-dropdown-inner {
@@ -538,11 +571,12 @@ body {
     }
     .nav-dropdown-inner a:last-of-type { border-bottom: none; }
 
-    /* Footer: stack columns */
+    /* FIX 5: Footer columns stack properly */
     .site-footer .col-sm-4 {
         width: 100% !important;
         float: none !important;
         padding: 0 8px;
+        display: block;
     }
     .footer-brand-desc { max-width: 100%; }
 }
@@ -553,14 +587,18 @@ body {
     .mobile-search-bar { display: block; }
     .contact-links .link-label { display: none; }
     .header-top { padding: 4px 0; }
-    .logo img { max-width: 340px; height: 58px; }
+
+    /* FIX 2: Reduce header-middle padding on mobile */
+    .header-middle { padding: 12px 0; }
+
+    /* FIX 3: max-height scales naturally */
+    .logo img { max-height: 58px; }
 
     .bottom-nav { display: block; }
     .site-footer { padding-bottom: 70px; }
     body { padding-bottom: 64px; }
     #chat-widget { display: none; }
 
-    /* Shrink bottom nav items for 5 items */
     .bottom-nav-item {
         min-width: 40px;
         padding: 4px 4px;
@@ -571,13 +609,17 @@ body {
 
 /* Very small phones */
 @media (max-width: 380px) {
-    .logo img { max-width: 260px; height: 50px; }
+    /* FIX 2: Even more compact header */
+    .header-middle { padding: 8px 0; }
+
+    /* FIX 3: max-height scales naturally */
+    .logo img { max-height: 46px; }
+
     .contact-links { gap: 8px; }
     .bottom-nav-item {
         min-width: 34px;
         padding: 4px 2px;
     }
-    /* Icons only — hide labels */
     .bottom-nav-item span { display: none; }
     .bottom-nav-item i { font-size: 20px; }
 }
