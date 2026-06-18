@@ -15,38 +15,47 @@
     <link href="{% static 'css/responsive.css' %}" rel="stylesheet">
 
 <style>
+/* ══════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-    --purple: #7B2CBF;
+    --purple:       #7B2CBF;
     --purple-light: #e0c0ff;
-    --white: #ffffff;
+    --white:        #ffffff;
 }
 
-/* FIX 1: Prevent horizontal scroll on all devices */
 html, body {
     overflow-x: hidden;
     max-width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-img { max-width: 100%; height: auto; }
+img { max-width: 100%; height: auto; display: block; }
 
 body {
     background: var(--white);
     color: var(--purple);
+    /* FIX: bottom padding applied only via media query; zero here */
     padding-bottom: 0;
 }
 
+/* ══════════════════════════════════════════
+   CONTAINER
+══════════════════════════════════════════ */
 .miy-container {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 16px;
-    /* FIX 4: Prevent container overflow */
     box-sizing: border-box;
 }
 
-/* ── HEADER TOP ── */
+/* ══════════════════════════════════════════
+   HEADER — TOP BAR
+══════════════════════════════════════════ */
 .header-top {
     background: var(--white);
     border-bottom: 1px solid #f0e6ff;
@@ -80,40 +89,39 @@ body {
 .contact-links a:hover,
 .social-links a:hover { opacity: 0.75; }
 
-/* ── HEADER MIDDLE ── */
+/* ══════════════════════════════════════════
+   HEADER — MIDDLE (logo bar)
+══════════════════════════════════════════ */
 .header-middle {
     background: var(--purple);
     padding: 22px 0;
-    /* FIX 4: Contain children */
     width: 100%;
-    max-width: 100%;
 }
 .header-middle-inner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    /* FIX 4: Don't let flex row overflow */
-    max-width: 100%;
+    /* FIX: allow wrap so content never overflows */
+    flex-wrap: wrap;
     min-width: 0;
 }
 .logo {
     flex: 1;
     display: flex;
     justify-content: center;
-    min-width: 0;      /* FIX 4: Critical for flex overflow prevention */
+    min-width: 0;
     overflow: hidden;
 }
-/* FIX 3: Use max-height instead of fixed height so image scales naturally */
 .logo img {
     width: auto;
     max-width: 100%;
     max-height: 90px;
     height: auto;
     object-fit: contain;
-    display: block;
 }
 
+/* Hamburger button */
 .hamburger-btn {
     background: none;
     border: none;
@@ -139,9 +147,13 @@ body {
 .hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 .hamburger-btn:hover span { background: var(--purple-light); }
+
+/* Right spacer keeps logo centred */
 .header-right-spacer { width: 36px; flex-shrink: 0; }
 
-/* ── NAV DROPDOWN ── */
+/* ══════════════════════════════════════════
+   NAV DROPDOWN
+══════════════════════════════════════════ */
 .nav-dropdown {
     display: none;
     background: var(--purple);
@@ -186,9 +198,11 @@ body {
     margin-left: 2px;
 }
 
-/* ── MOBILE SEARCH BAR ── */
+/* ══════════════════════════════════════════
+   MOBILE SEARCH BAR (shown <600px)
+══════════════════════════════════════════ */
 .mobile-search-bar {
-    display: none;
+    display: none;          /* hidden by default; shown via media query */
     background: var(--white);
     border-bottom: 1.5px solid var(--purple-light);
     padding: 8px 16px;
@@ -205,7 +219,8 @@ body {
 }
 .mobile-search-bar input {
     flex: 1;
-    min-width: 0;   /* FIX 4: Prevents input from overflowing flex row */
+    min-width: 0;           /* FIX: prevents flex-child from overflowing */
+    max-width: 100%;
     border: none;
     outline: none;
     padding: 7px 12px;
@@ -223,7 +238,9 @@ body {
 }
 .mobile-search-bar button:hover { background: #5a1a99; }
 
-/* ── HEADER BOTTOM (desktop search) ── */
+/* ══════════════════════════════════════════
+   HEADER BOTTOM — desktop search bar
+══════════════════════════════════════════ */
 .header-bottom {
     background: var(--white);
     border-bottom: 2px solid var(--purple-light);
@@ -260,7 +277,9 @@ body {
 }
 .search-box button:hover { background: #5a1a99; }
 
-/* ── FOOTER ── */
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
 .site-footer {
     background: var(--purple);
     color: var(--white);
@@ -269,12 +288,25 @@ body {
     width: 100%;
     overflow: hidden;
 }
-/* FIX 5: Clearfix for Bootstrap 3 float-based grid */
-.site-footer .row::after {
-    content: '';
-    display: table;
-    clear: both;
+
+/*
+ * FIX: Bootstrap 3's .row has negative side margins (-15px each).
+ * Inside a container that already has padding, this causes horizontal overflow.
+ * Reset the row margins to zero so nothing bleeds outside the viewport.
+ */
+.site-footer .row {
+    margin-left: 0;
+    margin-right: 0;
 }
+
+/*
+ * FIX: Re-balance column padding now that row margins are 0.
+ */
+.site-footer [class*="col-"] {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
 .footer-brand-name {
     font-size: 36px;
     font-weight: 700;
@@ -372,9 +404,11 @@ body {
     margin: 0;
 }
 
-/* ── BOTTOM NAV ── */
+/* ══════════════════════════════════════════
+   BOTTOM NAV (mobile only)
+══════════════════════════════════════════ */
 .bottom-nav {
-    display: none;
+    display: none;          /* hidden by default; shown via media query */
     position: fixed;
     bottom: 0;
     left: 0;
@@ -401,7 +435,7 @@ body {
     font-weight: 600;
     padding: 4px 8px;
     border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s;
     min-width: 52px;
     text-align: center;
     background: none;
@@ -413,15 +447,11 @@ body {
     color: var(--purple) !important;
     display: block;
 }
-.bottom-nav-item span {
-    color: var(--purple) !important;
-    font-size: 10px;
-}
+.bottom-nav-item span { color: var(--purple) !important; font-size: 10px; }
 .bottom-nav-item:hover,
-.bottom-nav-item.active {
-    background: #f0e6ff;
-    color: var(--purple) !important;
-}
+.bottom-nav-item.active { background: #f0e6ff; }
+
+/* Cart badge on bottom nav */
 .bottom-nav-item .bnav-badge { position: relative; }
 .bottom-nav-item .bnav-badge::after {
     content: attr(data-count);
@@ -440,7 +470,9 @@ body {
     font-weight: 700;
 }
 
-/* ── CHAT WIDGET ── */
+/* ══════════════════════════════════════════
+   CHAT WIDGET (hidden on mobile)
+══════════════════════════════════════════ */
 #chat-widget {
     position: fixed;
     bottom: 20px;
@@ -490,16 +522,8 @@ body {
     align-items: center;
     justify-content: space-between;
 }
-.chat-panel-header-title {
-    color: #fff;
-    font-weight: 600;
-    font-size: 14px;
-}
-.chat-panel-header-sub {
-    color: rgba(255,255,255,0.75);
-    font-size: 11px;
-    margin-top: 2px;
-}
+.chat-panel-header-title { color: #fff; font-weight: 600; font-size: 14px; }
+.chat-panel-header-sub   { color: rgba(255,255,255,0.75); font-size: 11px; margin-top: 2px; }
 .chat-close-btn {
     background: none;
     border: none;
@@ -530,36 +554,24 @@ body {
     cursor: pointer;
 }
 .chat-option-btn:hover { opacity: 0.88; transform: translateX(3px); }
-.chat-option-btn i {
-    font-size: 20px;
-    width: 24px;
-    text-align: center;
-    color: #fff !important;
-}
+.chat-option-btn i { font-size: 20px; width: 24px; text-align: center; color: #fff !important; }
 .chat-option-btn.whatsapp  { background: #25D366; }
 .chat-option-btn.messenger { background: #0084FF; }
 .chat-option-btn.instagram { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
 .chat-option-btn.telegram  { background: #229ED9; }
 .chat-option-btn.viber     { background: #7360F2; }
 .chat-option-btn.default   { background: var(--purple); }
-.chat-no-options {
-    padding: 20px;
-    text-align: center;
-    color: #999;
-    font-size: 13px;
-}
+.chat-no-options { padding: 20px; text-align: center; color: #999; font-size: 13px; }
 
-/* ══════════════════
-   RESPONSIVE
-══════════════════ */
-
-/* Tablet */
+/* ══════════════════════════════════════════
+   RESPONSIVE — Tablet  (≤ 768px)
+══════════════════════════════════════════ */
 @media (max-width: 768px) {
     .header-top-inner { justify-content: center; }
-    /* FIX 3: max-height instead of fixed height */
     .logo img { max-height: 70px; }
     .search-box input { width: 160px; }
 
+    /* Nav items stack vertically */
     .nav-dropdown-inner {
         flex-direction: column;
         padding: 4px 16px;
@@ -571,57 +583,69 @@ body {
     }
     .nav-dropdown-inner a:last-of-type { border-bottom: none; }
 
-    /* FIX 5: Footer columns stack properly */
+    /*
+     * FIX (Bootstrap 3): Bootstrap's .col-sm-* activates at 768px, meaning
+     * at exactly 768px they try to sit side-by-side but are too wide.
+     * Force full-width stacking at and below 768px.
+     */
     .site-footer .col-sm-4 {
         width: 100% !important;
         float: none !important;
-        padding: 0 8px;
         display: block;
+        padding-left: 8px;
+        padding-right: 8px;
+        margin-bottom: 32px;
     }
     .footer-brand-desc { max-width: 100%; }
 }
 
-/* Mobile */
+/* ══════════════════════════════════════════
+   RESPONSIVE — Mobile  (≤ 600px)
+══════════════════════════════════════════ */
 @media (max-width: 600px) {
-    .header-bottom { display: none; }
+    /* Swap desktop search for inline mobile search */
+    .header-bottom    { display: none; }
     .mobile-search-bar { display: block; }
+
+    /* Hide text labels in top bar contact links */
     .contact-links .link-label { display: none; }
     .header-top { padding: 4px 0; }
 
-    /* FIX 2: Reduce header-middle padding on mobile */
+    /* Compact logo bar */
     .header-middle { padding: 12px 0; }
+    .logo img      { max-height: 58px; }
 
-    /* FIX 3: max-height scales naturally */
-    .logo img { max-height: 58px; }
-
+    /* Show bottom nav */
     .bottom-nav { display: block; }
+
+    /*
+     * FIX: Only the footer needs extra bottom space to clear the fixed nav.
+     * Putting padding-bottom on <body> AND the footer was doubling the gap.
+     */
     .site-footer { padding-bottom: 70px; }
-    body { padding-bottom: 64px; }
+    body          { padding-bottom: 0; }
+
+    /* Hide floating chat widget — bottom nav handles contact */
     #chat-widget { display: none; }
 
-    .bottom-nav-item {
-        min-width: 40px;
-        padding: 4px 4px;
-    }
-    .bottom-nav-item i { font-size: 18px; }
+    /* Tighten bottom nav items */
+    .bottom-nav-item { min-width: 40px; padding: 4px; }
+    .bottom-nav-item i    { font-size: 18px; }
     .bottom-nav-item span { font-size: 9px; }
 }
 
-/* Very small phones */
+/* ══════════════════════════════════════════
+   RESPONSIVE — Very small phones  (≤ 380px)
+══════════════════════════════════════════ */
 @media (max-width: 380px) {
-    /* FIX 2: Even more compact header */
     .header-middle { padding: 8px 0; }
-
-    /* FIX 3: max-height scales naturally */
-    .logo img { max-height: 46px; }
-
+    .logo img      { max-height: 46px; }
     .contact-links { gap: 8px; }
-    .bottom-nav-item {
-        min-width: 34px;
-        padding: 4px 2px;
-    }
-    .bottom-nav-item span { display: none; }
-    .bottom-nav-item i { font-size: 20px; }
+
+    /* Minimal bottom nav — icons only */
+    .bottom-nav-item        { min-width: 34px; padding: 4px 2px; }
+    .bottom-nav-item span   { display: none; }
+    .bottom-nav-item i      { font-size: 20px; }
 }
 </style>
 
@@ -630,7 +654,7 @@ body {
 
 <body>
 
-<!-- TOP BAR -->
+<!-- ══ TOP BAR ══════════════════════════════ -->
 <div class="header-top">
     <div class="miy-container">
         <div class="header-top-inner">
@@ -665,7 +689,7 @@ body {
     </div>
 </div>
 
-<!-- HEADER MIDDLE -->
+<!-- ══ HEADER MIDDLE ════════════════════════ -->
 <div class="header-middle">
     <div class="miy-container">
         <div class="header-middle-inner">
@@ -683,7 +707,7 @@ body {
     </div>
 </div>
 
-<!-- NAV DROPDOWN -->
+<!-- ══ NAV DROPDOWN ═════════════════════════ -->
 <div class="nav-dropdown" id="navDropdown" aria-hidden="true">
     <div class="nav-dropdown-inner">
         <a href="{% url 'index' %}"><i class="fa fa-home"></i> Home</a>
@@ -693,9 +717,7 @@ body {
         <a href="{% url 'order' %}"><i class="fa fa-star"></i> Orders</a>
         <a href="{% url 'cart:cart_detail' %}">
             <i class="fa fa-shopping-cart"></i> Cart
-            <span class="cart-badge-drop">
-                {{ request.session.cart|length|default:0 }}
-            </span>
+            <span class="cart-badge-drop">{{ request.session.cart|length|default:0 }}</span>
         </a>
         {% if user.is_authenticated %}
         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-nav').submit();">
@@ -710,7 +732,7 @@ body {
     </div>
 </div>
 
-<!-- HEADER BOTTOM — desktop search -->
+<!-- ══ HEADER BOTTOM — desktop search ═══════ -->
 <div class="header-bottom">
     <div class="miy-container">
         <div class="header-bottom-inner">
@@ -726,7 +748,7 @@ body {
     </div>
 </div>
 
-<!-- MOBILE SEARCH BAR -->
+<!-- ══ MOBILE SEARCH BAR ════════════════════ -->
 <div class="mobile-search-bar">
     <form method="GET" action="{% url 'product' %}">
         <input type="text" name="q"
@@ -736,16 +758,22 @@ body {
     </form>
 </div>
 
-<!-- PAGE BODY -->
+<!-- ══ PAGE CONTENT ═════════════════════════ -->
 {% block body %}{% endblock %}
 
-<!-- FOOTER -->
+<!-- ══ FOOTER ═══════════════════════════════ -->
 <footer class="site-footer">
     <div class="miy-container">
+        <!--
+            FIX: Added col-xs-12 to every column.
+            Bootstrap 3 only applies col-sm-* at ≥768px.
+            Without col-xs-12 the columns try to sit inline on smaller screens
+            and overflow the viewport.
+        -->
         <div class="row">
 
             <!-- COL 1 — Brand + Social -->
-            <div class="col-sm-4" style="margin-bottom:32px;">
+            <div class="col-xs-12 col-sm-4" style="margin-bottom:32px;">
                 <span class="footer-brand-name">Miyabi</span>
                 <p class="footer-brand-desc">
                     Miyabi is an online-based Bangladeshi website that offers
@@ -769,7 +797,7 @@ body {
             </div>
 
             <!-- COL 2 — Quick Links + Policy -->
-            <div class="col-sm-4" style="margin-bottom:32px;">
+            <div class="col-xs-12 col-sm-4" style="margin-bottom:32px;">
                 <div class="footer-section-title">Quick Links</div>
                 <ul class="footer-links">
                     <li><a href="{% url 'index' %}">Home</a></li>
@@ -789,7 +817,7 @@ body {
             </div>
 
             <!-- COL 3 — Contact -->
-            <div class="col-sm-4" style="margin-bottom:32px;">
+            <div class="col-xs-12 col-sm-4" style="margin-bottom:32px;">
                 <div class="footer-section-title">Contact Us</div>
                 <div class="footer-contact-item">
                     <i class="fa fa-phone"></i>
@@ -809,15 +837,15 @@ body {
                 </div>
             </div>
 
-        </div>
-    </div>
+        </div><!-- /.row -->
+    </div><!-- /.miy-container -->
 
     <div class="footer-bottom">
         <p>Copyright &copy; 2026 Miyabi Inc. All rights reserved. &nbsp;|&nbsp; Designed by AN</p>
     </div>
 </footer>
 
-<!-- BOTTOM NAV BAR -->
+<!-- ══ BOTTOM NAV BAR (mobile) ══════════════ -->
 <nav class="bottom-nav" id="bottomNav">
     <div class="bottom-nav-inner">
 
@@ -857,7 +885,7 @@ body {
     </div>
 </nav>
 
-<!-- CHAT WIDGET -->
+<!-- ══ CHAT WIDGET ══════════════════════════ -->
 <div id="chat-widget">
     <button id="chat-toggle" onclick="toggleChat()" aria-label="Chat with us">
         <i class="fa fa-comments" style="color:#fff; font-size:22px;"></i>
@@ -920,7 +948,7 @@ body {
     </div>
 </div>
 
-<!-- JS -->
+<!-- ══ SCRIPTS ═══════════════════════════════ -->
 <script src="{% static 'js/jquery.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
@@ -930,14 +958,16 @@ body {
     var btn      = document.getElementById('hamburgerBtn');
     var dropdown = document.getElementById('navDropdown');
 
+    /* Toggle nav on hamburger click */
     btn.addEventListener('click', function (e) {
         e.stopPropagation();
         var isOpen = dropdown.classList.toggle('open');
         btn.classList.toggle('open', isOpen);
         btn.setAttribute('aria-expanded', String(isOpen));
-        dropdown.setAttribute('aria-hidden', String(!isOpen));
+        dropdown.setAttribute('aria-hidden',  String(!isOpen));
     });
 
+    /* Close nav when a link inside it is clicked */
     dropdown.querySelectorAll('a').forEach(function (link) {
         link.addEventListener('click', function () {
             dropdown.classList.remove('open');
@@ -947,6 +977,7 @@ body {
         });
     });
 
+    /* Close nav on outside click */
     document.addEventListener('click', function (e) {
         if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.classList.remove('open');
@@ -956,7 +987,7 @@ body {
         }
     });
 
-    /* Active bottom nav highlighting */
+    /* Highlight the active bottom-nav item */
     var path  = window.location.pathname;
     var items = document.querySelectorAll('.bottom-nav-item');
     items.forEach(function (item) {
@@ -965,6 +996,7 @@ body {
             item.classList.add('active');
         }
     });
+    /* Always mark Home active when on root */
     if (path === '/') {
         var homeBtn = document.getElementById('bnav-home');
         if (homeBtn) homeBtn.classList.add('active');
