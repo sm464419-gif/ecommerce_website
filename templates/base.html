@@ -52,15 +52,85 @@ body {
  */
 .container,
 .container-fluid,
-.row,
 section,
 .section {
     max-width: 100% !important;
     overflow-x: hidden !important;
 }
 
-/* Bootstrap 3 rows get negative margins that cause overflow — neutralise globally */
-.row {
+/*
+ * ══════════════════════════════════════════════════════
+ * RESPONSIVE.CSS CONFLICT OVERRIDES
+ * responsive.css targets old Bootstrap class names that
+ * overlap with our new layout (.header-middle, .logo,
+ * .header-bottom etc). Every rule below cancels a
+ * specific conflict from that file.
+ * ══════════════════════════════════════════════════════
+ */
+
+/* Cancel: .header-middle .col-sm-4 { display:inline-block; overflow:inherit; width:100% } */
+.header-middle-inner {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    width: auto !important;
+}
+
+/* Cancel: .logo { text-align:center; width:100% } at 480px
+   Our .logo is a flex child — width:100% would collapse it */
+.logo {
+    text-align: unset !important;
+    width: auto !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+/* Cancel: .header-bottom .col-sm-9 { display:inline-block; width:100% }
+          .header-bottom .col-sm-3 { position:absolute; left:0; top:38px } */
+.header-bottom-inner {
+    display: flex !important;
+    position: static !important;
+    width: 100% !important;
+}
+.header-bottom .col-sm-9,
+.header-bottom .col-sm-3 {
+    position: static !important;
+    display: block !important;
+    width: auto !important;
+    top: auto !important;
+    left: auto !important;
+}
+
+/* Cancel: .shop-menu.pull-right { float:none!important } — we don't use pull-right but guard it */
+.header-bottom-inner form {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Cancel: .mainmenu { width:100% } — not used but prevents bleed if main.css defines it */
+.mainmenu { display: none !important; }   /* we don't use the old mainmenu at all */
+
+/* Cancel: .header_top .col-sm-6 float rules that may affect .header-top-inner children */
+.header-top-inner > * {
+    float: none !important;
+}
+
+/* Cancel: .social-icons.pull-right { float:none!important; text-align:center } */
+.social-links {
+    float: none !important;
+    text-align: left !important;
+}
+
+/* Prevent any .item width/padding rules from old slider breaking our layout */
+.header-middle .item,
+.nav-dropdown .item {
+    padding-left: 0 !important;
+    width: auto !important;
+}
+
+/* Bootstrap 3 .row negative margins — neutralise site-wide */
+.site-footer .row,
+.miy-container .row {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
