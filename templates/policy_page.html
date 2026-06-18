@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="miy-container" style="padding: 40px 16px; min-height: 60vh;">
+    <h2 style="color: var(--purple); margin-bottom: 20px;">{{ page.title }}</h2>
+    <hr style="border-color: var(--purple-light); margin-bottom: 24px;">
+    <div style="font-size: 15px; line-height: 1.8; color: #333;">
+        {{ page.content|linebreaks }}
+    </div>
+    <p style="margin-top: 32px; font-size: 12px; color: #aaa;">
+        Last updated: {{ page.updated|date:"F j, Y" }}
+    </p>
+</div>
+{% endblock %}

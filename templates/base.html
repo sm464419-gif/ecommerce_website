@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home | Miyabi</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet">
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'css/responsive.css' %}" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+    --purple: #7B2CBF;
+    --purple-light: #e0c0ff;
+    --white: #ffffff;
+}
+
+img { max-width: 100%; height: auto; }
+body {
+    background: var(--white);
+    color: var(--purple);
+    padding-bottom: 0;
+}
+
+.miy-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* ── HEADER TOP ── */
+.header-top {
+    background: var(--white);
+    border-bottom: 1px solid #f0e6ff;
+    padding: 6px 0;
+}
+.header-top-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.contact-links,
+.social-links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.contact-links a,
+.social-links a {
+    color: var(--purple);
+    text-decoration: none;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.contact-links a:hover,
+.social-links a:hover { opacity: 0.75; }
+
+/* ── HEADER MIDDLE ── */
+.header-middle {
+    background: var(--purple);
+    padding: 22px 0;
+}
+.header-middle-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.logo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+}
+.logo img {
+    width: 100%;
+    max-width: 650px;
+    height: 90px;
+    object-fit: contain;
+    display: block;
+}
+
+.hamburger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    width: 36px;
+}
+.hamburger-btn span {
+    display: block;
+    width: 26px;
+    height: 2.5px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+.hamburger-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+.hamburger-btn:hover span { background: var(--purple-light); }
+.header-right-spacer { width: 36px; flex-shrink: 0; }
+
+/* ── NAV DROPDOWN ── */
+.nav-dropdown {
+    display: none;
+    background: var(--purple);
+    border-top: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 2px solid var(--purple-light);
+    position: relative;
+    z-index: 999;
+}
+.nav-dropdown.open { display: block; }
+.nav-dropdown-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+}
+.nav-dropdown-inner a {
+    color: var(--white) !important;
+    text-decoration: none !important;
+    font-size: 14px;
+    padding: 11px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.nav-dropdown-inner a:last-of-type { border-right: none; }
+.nav-dropdown-inner a:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--purple-light) !important;
+}
+.cart-badge-drop {
+    background: var(--white);
+    color: var(--purple);
+    border-radius: 50%;
+    padding: 1px 6px;
+    font-size: 11px;
+    margin-left: 2px;
+}
+
+/* ── MOBILE SEARCH BAR ── */
+.mobile-search-bar {
+    display: none;
+    background: var(--white);
+    border-bottom: 1.5px solid var(--purple-light);
+    padding: 8px 16px;
+}
+.mobile-search-bar form {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--purple);
+    border-radius: 4px;
+    overflow: hidden;
+    width: 100%;
+}
+.mobile-search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: var(--purple);
+}
+.mobile-search-bar button {
+    background: var(--purple);
+    border: none;
+    color: var(--white);
+    padding: 7px 14px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.mobile-search-bar button:hover { background: #5a1a99; }
+
+/* ── HEADER BOTTOM (desktop search) ── */
+.header-bottom {
+    background: var(--white);
+    border-bottom: 2px solid var(--purple-light);
+    padding: 8px 0;
+}
+.header-bottom-inner {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--purple);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.search-box input {
+    border: none;
+    outline: none;
+    padding: 5px 10px;
+    font-size: 13px;
+    color: var(--purple);
+    width: 220px;
+}
+.search-box button {
+    background: var(--purple);
+    border: none;
+    color: var(--white);
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.search-box button:hover { background: #5a1a99; }
+
+/* ── FOOTER ── */
+.site-footer {
+    background: var(--purple);
+    color: var(--white);
+    padding: 48px 0 0;
+    margin-top: 40px;
+}
+.footer-brand-name {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--white) !important;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+    display: block;
+}
+.footer-brand-desc {
+    color: rgba(255,255,255,0.85) !important;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    max-width: 360px;
+}
+.footer-section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white) !important;
+    margin-bottom: 6px;
+    display: inline-block;
+}
+.footer-section-title::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 2px;
+    background: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    margin-bottom: 16px;
+}
+.footer-socials {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    list-style: none;
+    padding: 0;
+}
+.footer-socials li a {
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white) !important;
+    font-size: 18px;
+    text-decoration: none !important;
+    transition: background 0.2s;
+}
+.footer-socials li a:hover { background: rgba(255,255,255,0.3); }
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+}
+.footer-links li {
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.footer-links li:last-child { border-bottom: none; }
+.footer-links li a {
+    color: rgba(255,255,255,0.9) !important;
+    text-decoration: none !important;
+    font-size: 15px;
+    transition: color 0.2s, padding-left 0.2s;
+    display: block;
+}
+.footer-links li a:hover { color: var(--white) !important; padding-left: 6px; }
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 15px;
+}
+.footer-contact-item i {
+    margin-top: 3px;
+    font-size: 15px;
+    color: var(--white) !important;
+    flex-shrink: 0;
+}
+.footer-contact-item span { color: rgba(255,255,255,0.9) !important; }
+.footer-bottom {
+    background: rgba(0,0,0,0.2);
+    padding: 14px 16px;
+    margin-top: 20px;
+    text-align: center;
+}
+.footer-bottom p {
+    color: rgba(255,255,255,0.8) !important;
+    font-size: 13px;
+    margin: 0;
+}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--white);
+    border-top: 2px solid var(--purple-light);
+    box-shadow: 0 -2px 12px rgba(123,44,191,0.12);
+}
+.bottom-nav-inner {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 6px 0 4px;
+}
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none !important;
+    color: var(--purple) !important;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+    min-width: 52px;
+    text-align: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.bottom-nav-item i {
+    font-size: 20px;
+    color: var(--purple) !important;
+    display: block;
+}
+.bottom-nav-item span {
+    color: var(--purple) !important;
+    font-size: 10px;
+}
+.bottom-nav-item:hover,
+.bottom-nav-item.active {
+    background: #f0e6ff;
+    color: var(--purple) !important;
+}
+.bottom-nav-item .bnav-badge { position: relative; }
+.bottom-nav-item .bnav-badge::after {
+    content: attr(data-count);
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--purple);
+    color: white;
+    border-radius: 50%;
+    font-size: 9px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/* ── CHAT WIDGET ── */
+#chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2000;
+    font-family: inherit;
+}
+#chat-toggle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--purple);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(123,44,191,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+#chat-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 22px rgba(123,44,191,0.45);
+}
+#chat-panel {
+    display: none;
+    position: absolute;
+    bottom: 64px;
+    right: 0;
+    width: 260px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1.5px solid var(--purple-light);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(123,44,191,0.18);
+    animation: chatSlideIn 0.25s ease;
+}
+@keyframes chatSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.chat-panel-header {
+    background: var(--purple);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.chat-panel-header-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+}
+.chat-panel-header-sub {
+    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+    margin-top: 2px;
+}
+.chat-close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+}
+.chat-options {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.chat-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none !important;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff !important;
+    transition: opacity 0.2s, transform 0.15s;
+    border: none;
+    cursor: pointer;
+}
+.chat-option-btn:hover { opacity: 0.88; transform: translateX(3px); }
+.chat-option-btn i {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+    color: #fff !important;
+}
+.chat-option-btn.whatsapp  { background: #25D366; }
+.chat-option-btn.messenger { background: #0084FF; }
+.chat-option-btn.instagram { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+.chat-option-btn.telegram  { background: #229ED9; }
+.chat-option-btn.viber     { background: #7360F2; }
+.chat-option-btn.default   { background: var(--purple); }
+.chat-no-options {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+}
+
+/* ══════════════════
+   RESPONSIVE
+══════════════════ */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .header-top-inner { justify-content: center; }
+    .logo img { max-width: 450px; height: 70px; }
+    .search-box input { width: 160px; }
+
+    .nav-dropdown-inner {
+        flex-direction: column;
+        padding: 4px 16px;
+    }
+    .nav-dropdown-inner a {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 11px 10px;
+    }
+    .nav-dropdown-inner a:last-of-type { border-bottom: none; }
+
+    /* Footer: stack columns */
+    .site-footer .col-sm-4 {
+        width: 100% !important;
+        float: none !important;
+        padding: 0 8px;
+    }
+    .footer-brand-desc { max-width: 100%; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .header-bottom { display: none; }
+    .mobile-search-bar { display: block; }
+    .contact-links .link-label { display: none; }
+    .header-top { padding: 4px 0; }
+    .logo img { max-width: 340px; height: 58px; }
+
+    .bottom-nav { display: block; }
+    .site-footer { padding-bottom: 70px; }
+    body { padding-bottom: 64px; }
+    #chat-widget { display: none; }
+
+    /* Shrink bottom nav items for 5 items */
+    .bottom-nav-item {
+        min-width: 40px;
+        padding: 4px 4px;
+    }
+    .bottom-nav-item i { font-size: 18px; }
+    .bottom-nav-item span { font-size: 9px; }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+    .logo img { max-width: 260px; height: 50px; }
+    .contact-links { gap: 8px; }
+    .bottom-nav-item {
+        min-width: 34px;
+        padding: 4px 2px;
+    }
+    /* Icons only — hide labels */
+    .bottom-nav-item span { display: none; }
+    .bottom-nav-item i { font-size: 20px; }
+}
+</style>
+
+{% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="header-top">
+    <div class="miy-container">
+        <div class="header-top-inner">
+            <ul class="contact-links">
+                <li>
+                    <a href="#">
+                        <i class="fa fa-phone"></i>
+                        <span class="link-label">+2 95 01 88 821</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-envelope"></i>
+                        <span class="link-label">info@domain.com</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="social-links">
+                {% for s in social_links %}
+                <li>
+                    <a href="{{ s.url }}" target="_blank" rel="noopener" aria-label="{{ s.platform }}">
+                        <i class="fa fa-{{ s.platform }}"></i>
+                    </a>
+                </li>
+                {% empty %}
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- HEADER MIDDLE -->
+<div class="header-middle">
+    <div class="miy-container">
+        <div class="header-middle-inner">
+            <button class="hamburger-btn" id="hamburgerBtn"
+                    aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="logo">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'images/home/miy1.png' %}" alt="Miyabi Logo">
+                </a>
+            </div>
+            <div class="header-right-spacer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- NAV DROPDOWN -->
+<div class="nav-dropdown" id="navDropdown" aria-hidden="true">
+    <div class="nav-dropdown-inner">
+        <a href="{% url 'index' %}"><i class="fa fa-home"></i> Home</a>
+        <a href="{% url 'product' %}"><i class="fa fa-shopping-bag"></i> Shop</a>
+        <a href="{% url 'contact_page' %}"><i class="fa fa-phone"></i> Contact</a>
+        <a href="{% url 'account' %}"><i class="fa fa-user"></i> Account</a>
+        <a href="{% url 'order' %}"><i class="fa fa-star"></i> Orders</a>
+        <a href="{% url 'cart:cart_detail' %}">
+            <i class="fa fa-shopping-cart"></i> Cart
+            <span class="cart-badge-drop">
+                {{ request.session.cart|length|default:0 }}
+            </span>
+        </a>
+        {% if user.is_authenticated %}
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-nav').submit();">
+            <i class="fa fa-sign-out"></i> Logout
+        </a>
+        <form id="logout-nav" method="post" action="{% url 'logout' %}" style="display:none;">
+            {% csrf_token %}
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- HEADER BOTTOM — desktop search -->
+<div class="header-bottom">
+    <div class="miy-container">
+        <div class="header-bottom-inner">
+            <form method="GET" action="{% url 'product' %}" style="margin:0;padding:0;">
+                <div class="search-box">
+                    <input type="text" name="q"
+                           placeholder="Search products…"
+                           value="{{ request.GET.q|default:'' }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MOBILE SEARCH BAR -->
+<div class="mobile-search-bar">
+    <form method="GET" action="{% url 'product' %}">
+        <input type="text" name="q"
+               placeholder="Search products…"
+               value="{{ request.GET.q|default:'' }}">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+</div>
+
+<!-- PAGE BODY -->
+{% block body %}{% endblock %}
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="miy-container">
+        <div class="row">
+
+            <!-- COL 1 — Brand + Social -->
+            <div class="col-sm-4" style="margin-bottom:32px;">
+                <span class="footer-brand-name">Miyabi</span>
+                <p class="footer-brand-desc">
+                    Miyabi is an online-based Bangladeshi website that offers
+                    100% authentic and premium quality products.
+                </p>
+                <div class="footer-section-title">Social Media</div>
+                <ul class="footer-socials">
+                    {% for s in social_links %}
+                    <li>
+                        <a href="{{ s.url }}" target="_blank" rel="noopener" aria-label="{{ s.platform }}">
+                            <i class="fa fa-{{ s.platform }}"></i>
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li><a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="#" aria-label="YouTube"><i class="fa fa-youtube"></i></a></li>
+                    <li><a href="#" aria-label="Twitter"><i class="fa fa-twitter"></i></a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- COL 2 — Quick Links + Policy -->
+            <div class="col-sm-4" style="margin-bottom:32px;">
+                <div class="footer-section-title">Quick Links</div>
+                <ul class="footer-links">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'product' %}">Products</a></li>
+                    <li><a href="{% url 'cart:cart_detail' %}">Cart</a></li>
+                    <li><a href="{% url 'account' %}">Account</a></li>
+                    <li><a href="{% url 'order' %}">Tracking / Orders</a></li>
+                </ul>
+                <div class="footer-section-title">Policy Pages</div>
+                <ul class="footer-links">
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'terms' %}">Terms &amp; Conditions</a></li>
+                    <li><a href="{% url 'shipping_delivery' %}">Shipping &amp; Delivery</a></li>
+                    <li><a href="{% url 'refund_returns' %}">Refund and Returns</a></li>
+                </ul>
+            </div>
+
+            <!-- COL 3 — Contact -->
+            <div class="col-sm-4" style="margin-bottom:32px;">
+                <div class="footer-section-title">Contact Us</div>
+                <div class="footer-contact-item">
+                    <i class="fa fa-phone"></i>
+                    <span>+2 95 01 88 821</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fa fa-envelope"></i>
+                    <span>info@miyabi.com</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fa fa-map-marker"></i>
+                    <span>Dhaka, Bangladesh</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fa fa-clock-o"></i>
+                    <span>Sun – Thu: 9:00 AM – 6:00 PM</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>Copyright &copy; 2026 Miyabi Inc. All rights reserved. &nbsp;|&nbsp; Designed by AN</p>
+    </div>
+</footer>
+
+<!-- BOTTOM NAV BAR -->
+<nav class="bottom-nav" id="bottomNav">
+    <div class="bottom-nav-inner">
+
+        <a href="{% url 'index' %}" class="bottom-nav-item" id="bnav-home">
+            <i class="fa fa-home"></i><span>HOME</span>
+        </a>
+
+        <a href="{% url 'product' %}" class="bottom-nav-item" id="bnav-products">
+            <i class="fa fa-shopping-bag"></i><span>SHOP</span>
+        </a>
+
+        <a href="{% url 'cart:cart_detail' %}" class="bottom-nav-item" id="bnav-cart">
+            <span class="bnav-badge" data-count="{{ request.session.cart|length|default:0 }}">
+                <i class="fa fa-shopping-cart"></i>
+            </span>
+            <span>CART</span>
+        </a>
+
+        <a href="{% url 'account' %}" class="bottom-nav-item" id="bnav-account">
+            <i class="fa fa-user"></i><span>ACCOUNT</span>
+        </a>
+
+        {% if user.is_authenticated %}
+        <a href="#" class="bottom-nav-item"
+           onclick="event.preventDefault(); document.getElementById('logout-bnav').submit();">
+            <i class="fa fa-sign-out"></i><span>LOGOUT</span>
+        </a>
+        <form id="logout-bnav" method="post" action="{% url 'logout' %}" style="display:none;">
+            {% csrf_token %}
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}" class="bottom-nav-item" id="bnav-login">
+            <i class="fa fa-sign-in"></i><span>LOGIN</span>
+        </a>
+        {% endif %}
+
+    </div>
+</nav>
+
+<!-- CHAT WIDGET -->
+<div id="chat-widget">
+    <button id="chat-toggle" onclick="toggleChat()" aria-label="Chat with us">
+        <i class="fa fa-comments" style="color:#fff; font-size:22px;"></i>
+    </button>
+
+    <div id="chat-panel">
+        <div class="chat-panel-header">
+            <div>
+                <div class="chat-panel-header-title">Chat with us</div>
+                <div class="chat-panel-header-sub">Choose a platform below</div>
+            </div>
+            <button class="chat-close-btn" onclick="toggleChat()" aria-label="Close">&#10005;</button>
+        </div>
+
+        <div class="chat-options">
+            {% for s in social_links %}
+                {% if s.show_in_chat %}
+                    {% if s.platform == 'whatsapp' %}
+                        <a href="https://wa.me/{{ s.chat_handle }}"
+                           target="_blank" rel="noopener"
+                           class="chat-option-btn whatsapp">
+                            <i class="fa fa-whatsapp"></i> WhatsApp
+                        </a>
+                    {% elif s.platform == 'messenger' %}
+                        <a href="https://m.me/{{ s.chat_handle }}"
+                           target="_blank" rel="noopener"
+                           class="chat-option-btn messenger">
+                            <i class="fa fa-facebook"></i> Messenger
+                        </a>
+                    {% elif s.platform == 'instagram' %}
+                        <a href="https://ig.me/m/{{ s.chat_handle }}"
+                           target="_blank" rel="noopener"
+                           class="chat-option-btn instagram">
+                            <i class="fa fa-instagram"></i> Instagram
+                        </a>
+                    {% elif s.platform == 'telegram' %}
+                        <a href="https://t.me/{{ s.chat_handle }}"
+                           target="_blank" rel="noopener"
+                           class="chat-option-btn telegram">
+                            <i class="fa fa-telegram"></i> Telegram
+                        </a>
+                    {% elif s.platform == 'viber' %}
+                        <a href="viber://chat?number={{ s.chat_handle }}"
+                           target="_blank" rel="noopener"
+                           class="chat-option-btn viber">
+                            <i class="fa fa-phone"></i> Viber
+                        </a>
+                    {% else %}
+                        <a href="{{ s.url }}"
+                           target="_blank" rel="noopener"
+                           class="chat-option-btn default">
+                            <i class="fa fa-{{ s.platform }}"></i> {{ s.platform|capfirst }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% empty %}
+                <div class="chat-no-options">No chat channels configured yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+<script>
+(function () {
+    var btn      = document.getElementById('hamburgerBtn');
+    var dropdown = document.getElementById('navDropdown');
+
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var isOpen = dropdown.classList.toggle('open');
+        btn.classList.toggle('open', isOpen);
+        btn.setAttribute('aria-expanded', String(isOpen));
+        dropdown.setAttribute('aria-hidden', String(!isOpen));
+    });
+
+    dropdown.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            dropdown.classList.remove('open');
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+            dropdown.setAttribute('aria-hidden', 'true');
+        });
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+            dropdown.setAttribute('aria-hidden', 'true');
+        }
+    });
+
+    /* Active bottom nav highlighting */
+    var path  = window.location.pathname;
+    var items = document.querySelectorAll('.bottom-nav-item');
+    items.forEach(function (item) {
+        var href = item.getAttribute('href');
+        if (href && href !== '#' && path === href) {
+            item.classList.add('active');
+        }
+    });
+    if (path === '/') {
+        var homeBtn = document.getElementById('bnav-home');
+        if (homeBtn) homeBtn.classList.add('active');
+    }
+})();
+
+function toggleChat() {
+    var panel  = document.getElementById('chat-panel');
+    var isOpen = panel.style.display === 'block';
+    panel.style.display = isOpen ? 'none' : 'block';
+}
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

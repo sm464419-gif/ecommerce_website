@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="miy-container" style="max-width:520px;padding:40px 16px;">
+  <h2 style="color:#7B2CBF;margin-bottom:24px;">Edit Profile</h2>
+  <form method="POST" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:14px;">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label style="color:#7B2CBF;font-size:13px;font-weight:600;display:block;margin-bottom:4px;">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p style="color:red;font-size:12px;margin:4px 0 0;">{{ field.errors.0 }}</p>{% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" style="background:#7B2CBF;color:#fff;border:none;padding:10px;border-radius:8px;font-weight:600;cursor:pointer;">Save Changes</button>
+    <a href="{% url 'account' %}" style="text-align:center;color:#7B2CBF;font-size:13px;">Cancel</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="miy-container" style="padding: 40px 16px;">
+
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="alert alert-success" style="background:#e8f5e9;border-left:4px solid #4caf50;padding:12px 16px;border-radius:6px;margin-bottom:20px;color:#2e7d32;">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:28px;align-items:start;">
+
+    <!-- LEFT: Profile Card -->
+    <div style="background:#f9f0ff;border-radius:16px;padding:28px;text-align:center;border:1.5px solid #e0c0ff;">
+      {% if profile.picture %}
+        <img src="{{ profile.picture.url }}" alt="Profile"
+             style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #7B2CBF;margin-bottom:14px;">
+      {% else %}
+        <div style="width:100px;height:100px;border-radius:50%;background:#7B2CBF;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:40px;color:#fff;">
+          {{ request.user.username|first|upper }}
+        </div>
+      {% endif %}
+
+      <h2 style="color:#7B2CBF;margin:0 0 4px;font-size:20px;">
+        {{ request.user.get_full_name|default:request.user.username }}
+      </h2>
+      <p style="color:#888;font-size:13px;margin:0 0 6px;">{{ request.user.email }}</p>
+      {% if profile.phone %}
+        <p style="color:#888;font-size:13px;margin:0 0 16px;">{{ profile.phone }}</p>
+      {% endif %}
+
+      <a href="{% url 'account_edit' %}"
+         style="display:inline-block;background:#7B2CBF;color:#fff;padding:8px 22px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;">
+        Edit Profile
+      </a>
+    </div>
+
+    <!-- RIGHT: Panels -->
+    <div style="display:flex;flex-direction:column;gap:22px;">
+
+      <!-- Account Settings -->
+      <div style="background:#fff;border-radius:14px;border:1.5px solid #e0c0ff;overflow:hidden;">
+        <div style="background:#7B2CBF;padding:14px 20px;">
+          <h3 style="color:#fff;margin:0;font-size:16px;"><i class="fa fa-cog"></i> &nbsp;Account Settings</h3>
+        </div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:10px;">
+          <a href="{% url 'change_password' %}" class="account-link">
+            <i class="fa fa-lock"></i> Change Password
+          </a>
+          <a href="{% url 'change_email' %}" class="account-link">
+            <i class="fa fa-envelope"></i> Change Email
+          </a>
+          <a href="#" class="account-link">
+            <i class="fa fa-shield"></i> Security Settings
+          </a>
+          <a href="#" class="account-link">
+            <i class="fa fa-mobile"></i> Two-Factor Authentication (2FA)
+          </a>
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div style="background:#fff;border-radius:14px;border:1.5px solid #e0c0ff;overflow:hidden;">
+        <div style="background:#7B2CBF;padding:14px 20px;">
+          <h3 style="color:#fff;margin:0;font-size:16px;"><i class="fa fa-shopping-bag"></i> &nbsp;Orders / Purchase History</h3>
+        </div>
+        <div style="padding:16px 20px;">
+          {% if orders %}
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                  <tr style="border-bottom:2px solid #e0c0ff;">
+                    <th style="padding:8px;text-align:left;color:#7B2CBF;">Product</th>
+                    <th style="padding:8px;text-align:left;color:#7B2CBF;">Qty</th>
+                    <th style="padding:8px;text-align:left;color:#7B2CBF;">Total</th>
+                    <th style="padding:8px;text-align:left;color:#7B2CBF;">Date</th>
+                    <th style="padding:8px;text-align:left;color:#7B2CBF;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for o in orders %}
+                  <tr style="border-bottom:1px solid #f0e6ff;">
+                    <td style="padding:10px 8px;">
+                      <div style="display:flex;align-items:center;gap:10px;">
+                        {% if o.image %}
+                          <img src="{{ o.image.url }}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;">
+                        {% endif %}
+                        {{ o.product }}
+                      </div>
+                    </td>
+                    <td style="padding:10px 8px;">{{ o.quantity }}</td>
+                    <td style="padding:10px 8px;">৳{{ o.total }}</td>
+                    <td style="padding:10px 8px;">{{ o.date }}</td>
+                    <td style="padding:10px 8px;">
+                      <span style="
+                        padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+                        {% if o.status == 'delivered' %}background:#e8f5e9;color:#2e7d32;
+                        {% elif o.status == 'cancelled' %}background:#ffebee;color:#c62828;
+                        {% elif o.status == 'shipped' %}background:#e3f2fd;color:#1565c0;
+                        {% elif o.status == 'processing' %}background:#fff8e1;color:#f57f17;
+                        {% else %}background:#f3e5f5;color:#6a1b9a;{% endif %}
+                      ">{{ o.get_status_display }}</span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p style="color:#aaa;text-align:center;padding:20px 0;margin:0;">No orders yet.</p>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+.account-link {
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:8px;
+  color:#7B2CBF !important;text-decoration:none !important;
+  font-size:14px;font-weight:500;
+  border:1px solid #f0e6ff;
+  transition:background 0.2s;
+}
+.account-link:hover { background:#f9f0ff; }
+.account-link i { width:18px;text-align:center;color:#7B2CBF; }
+
+@media(max-width:768px){
+  div[style*="grid-template-columns:1fr 2fr"] {
+    grid-template-columns:1fr !important;
+  }
+}
+</style>
+{% endblock %}
