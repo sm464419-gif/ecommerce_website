@@ -47,8 +47,7 @@ body {
 
 /*
  * CRITICAL: Force all sections/rows inside page content
- * to never exceed viewport width. Catches slider plugins,
- * Bootstrap rows, and legacy layout divs from main.css.
+ * to never exceed viewport width.
  */
 .container,
 .container-fluid,
@@ -59,16 +58,60 @@ section,
 }
 
 /*
- * ══════════════════════════════════════════════════════
- * RESPONSIVE.CSS CONFLICT OVERRIDES
- * responsive.css targets old Bootstrap class names that
- * overlap with our new layout (.header-middle, .logo,
- * .header-bottom etc). Every rule below cancels a
- * specific conflict from that file.
- * ══════════════════════════════════════════════════════
+ * ══════════════════════════════════════════════════════════
+ * MAIN.CSS + RESPONSIVE.CSS CONFLICT NEUTRALISERS
+ *
+ * main.css and responsive.css were written for an old
+ * Bootstrap template that used different HTML structure.
+ * They share class names (.header-middle, .header-bottom,
+ * .logo, .header_top, .social-icons etc.) with our new
+ * layout but apply wrong values. Every rule below cancels
+ * a specific conflict identified from those files.
+ * ══════════════════════════════════════════════════════════
  */
 
-/* Cancel: .header-middle .col-sm-4 { display:inline-block; overflow:inherit; width:100% } */
+/*
+ * main.css: body { background: linear-gradient(135deg, #020617 ...) }
+ * Overrides our white background with a dark gradient.
+ */
+body {
+    background: #ffffff !important;
+}
+
+/*
+ * main.css: .header-bottom { padding-bottom:30px; padding-top:30px; }
+ * This adds 60px of height to the desktop search bar even when
+ * display:none is set — some browsers still honour padding on
+ * display:none elements when calculating layout. We zero it out.
+ */
+.header-bottom {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+/*
+ * main.css: .header-middle .container .row { border-bottom:1px solid #f5f5f5;
+ *           margin-left:0; margin-right:0; padding-bottom:20px; padding-top:20px; }
+ * main.css: .header-middle .container .row .col-sm-4 { padding-left:0; }
+ * These rules target the OLD template's .container > .row structure inside
+ * .header-middle. Our header-middle uses .miy-container + .header-middle-inner
+ * (flex), so the .container and .row rules don't match — but .col-sm-4 can
+ * still match the logo's parent. We override to be safe.
+ */
+.header-middle .container .row {
+    border-bottom: none !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+.header-middle .container .row .col-sm-4 {
+    padding-left: inherit !important;
+}
+
+/*
+ * responsive.css: .header-middle .col-sm-4 { display:inline-block; overflow:inherit; width:100% }
+ * responsive.css (480px): .header-middle .col-sm-4 { text-align:center; overflow:inherit; }
+ * These turn our flex logo container into a full-width inline-block.
+ */
 .header-middle-inner {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -76,17 +119,23 @@ section,
     width: auto !important;
 }
 
-/* Cancel: .logo { text-align:center; width:100% } at 480px
-   Our .logo is a flex child — width:100% would collapse it */
+/*
+ * responsive.css (480px): .logo { text-align:center; width:100% }
+ * Our .logo is a flex child — width:100% collapses the flex layout.
+ */
 .logo {
     text-align: unset !important;
     width: auto !important;
     flex: 1 !important;
     min-width: 0 !important;
+    overflow: hidden !important;
 }
 
-/* Cancel: .header-bottom .col-sm-9 { display:inline-block; width:100% }
-          .header-bottom .col-sm-3 { position:absolute; left:0; top:38px } */
+/*
+ * responsive.css: .header-bottom .col-sm-9 { display:inline-block; width:100% }
+ * responsive.css: .header-bottom .col-sm-3 { position:absolute; left:0; top:38px }
+ * These pull the search box out of normal flow entirely on mobile.
+ */
 .header-bottom-inner {
     display: flex !important;
     position: static !important;
@@ -101,34 +150,70 @@ section,
     left: auto !important;
 }
 
-/* Cancel: .shop-menu.pull-right { float:none!important } — we don't use pull-right but guard it */
-.header-bottom-inner form {
-    margin: 0 !important;
-    padding: 0 !important;
-}
+/*
+ * main.css: .search_box input { width:155px; background-image:url(searchicon.png) ... }
+ * This targets the OLD search input. Our search inputs use .search-box input
+ * and .mobile-search-bar input — safe, but guard against the old selector.
+ */
+.search_box { display: none !important; }
 
-/* Cancel: .mainmenu { width:100% } — not used but prevents bleed if main.css defines it */
-.mainmenu { display: none !important; }   /* we don't use the old mainmenu at all */
+/*
+ * main.css: .mainmenu { ... } / responsive.css: .mainmenu { width:100% }
+ * We don't use the old Bootstrap navbar at all.
+ */
+.mainmenu { display: none !important; }
 
-/* Cancel: .header_top .col-sm-6 float rules that may affect .header-top-inner children */
+/*
+ * responsive.css: .header_top .col-sm-6:first-child { display:inline-block; float:left }
+ * responsive.css: .header_top .col-sm-6:last-child  { display:inline-block; float:right }
+ * Our header-top uses flexbox — floats break it.
+ */
 .header-top-inner > * {
     float: none !important;
 }
 
-/* Cancel: .social-icons.pull-right { float:none!important; text-align:center } */
+/*
+ * responsive.css: .social-icons.pull-right { float:none!important; text-align:center }
+ * main.css: .social-icons ul li { display:inline-block }
+ * Our social links use .social-links (not .social-icons) so direct conflict
+ * is unlikely, but cancel float just in case Bootstrap utility classes apply.
+ */
 .social-links {
     float: none !important;
     text-align: left !important;
 }
 
-/* Prevent any .item width/padding rules from old slider breaking our layout */
+/*
+ * responsive.css: #slider-carousel .item { padding-left:0 }
+ * responsive.css (480px): .item { padding-left:0 }
+ * main.css: (commented out) .item { padding-left:100px }
+ * The padding-left:0 rules are fine for the slider. Guard header areas.
+ */
 .header-middle .item,
 .nav-dropdown .item {
     padding-left: 0 !important;
     width: auto !important;
 }
 
-/* Bootstrap 3 .row negative margins — neutralise site-wide */
+/*
+ * main.css: .footer-bottom { background:#D6D6D0; padding-top:10px; }
+ * main.css: .footer-bottom p { color:#363432; margin-left:15px; }
+ * These override our purple footer bottom colours.
+ */
+.footer-bottom {
+    background: rgba(0,0,0,0.2) !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+}
+.footer-bottom p {
+    color: rgba(255,255,255,0.8) !important;
+    margin-left: 0 !important;
+}
+
+/*
+ * Bootstrap 3 .row default negative margins cause horizontal overflow.
+ * Neutralise site-wide for our containers.
+ */
 .site-footer .row,
 .miy-container .row {
     margin-left: 0 !important;
