@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.views import LoginView
+from app.forms import LoginForm
 from . import views
 
 # ── Cart URLs with namespace ──
@@ -19,6 +21,15 @@ urlpatterns = [
     path('base/', views.Base, name='base'),
     path('', views.Index, name='index'),
     path('signup', views.signup, name='signup'),
+
+    # Custom login view using LoginForm (adds .form-control class to fields).
+    # Must come BEFORE the auth.urls include below so it takes priority
+    # over the default 'login' route registered by django.contrib.auth.urls.
+    path('accounts/login/', LoginView.as_view(
+        template_name='registration/login.html',
+        authentication_form=LoginForm
+    ), name='login'),
+
     path('accounts/', include('django.contrib.auth.urls')),
                   path('account/', views.account, name='account'),
                   path('account/edit/', views.account_edit, name='account_edit'),
