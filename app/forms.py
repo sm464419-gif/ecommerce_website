@@ -6,19 +6,18 @@ from .models import UserProfile
 
 class LoginForm(AuthenticationForm):
     """
-    Custom login form so the username/password fields render with
-    Bootstrap's .form-control class (Django's default AuthenticationForm
-    renders bare <input> tags with no class, which is why they didn't
-    stretch to full width before).
+    Custom login form using a plain custom CSS class (no Bootstrap)
+    so the username/password fields render full-width on their own,
+    independent of Bootstrap being loaded.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'input-field',
             'placeholder': 'Username',
         })
         self.fields['password'].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'input-field',
             'placeholder': 'Password',
         })
 
